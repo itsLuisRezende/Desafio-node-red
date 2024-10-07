@@ -96,11 +96,11 @@
         "method": "get",
         "upload": false,
         "swaggerDoc": "",
-        "x": 120,
-        "y": 100,
+        "x": 140,
+        "y": 140,
         "wires": [
             [
-                "9eb2f53f1004199e"
+                "992618fa9dfe7533"
             ]
         ]
     },
@@ -178,24 +178,5 @@
         "x": 540,
         "y": 300,
         "wires": []
-    },
-    {
-        "id": "9eb2f53f1004199e",
-        "type": "template",
-        "z": "784a2d30e0c6880b",
-        "name": "CSS/HTML",
-        "field": "payload",
-        "fieldType": "msg",
-        "format": "handlebars",
-        "syntax": "mustache",
-        "template": "<!DOCTYPE html>\n<html lang=\"pt-BR\">\n<head>\n    <meta charset=\"UTF-8\">\n    <title>Pesquisar CEP</title>\n    <style>\n        body {\n            font-family: Arial, sans-serif;\n            background-color: #f4f4f4;\n            color: #333;\n            margin: 0;\n            padding: 20px;\n        }\n        .container {\n            max-width: 600px;\n            margin: 50px auto;\n            padding: 20px;\n            background-color: #fff;\n            border-radius: 8px;\n            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);\n        }\n        h1 {\n            text-align: center;\n            color: #2c3e50;\n        }\n        input[type=\"text\"], input[type=\"submit\"] {\n            width: 100%;\n            padding: 10px;\n            margin: 10px 0;\n            border-radius: 4px;\n            border: 1px solid #ccc;\n        }\n        input[type=\"submit\"] {\n            background-color: #3498db;\n            color: white;\n            cursor: pointer;\n        }\n        .result {\n            margin-top: 20px;\n        }\n    </style>\n</head>\n<body>\n    <div class=\"container\">\n        <h1>Pesquisar CEP</h1>\n        <form action=\"/cep_result\" method=\"GET\">\n            <label for=\"cep\">Insira o CEP:</label>\n            <input type=\"text\" id=\"cep\" name=\"cep\" placeholder=\"Ex: 01001-000\" required>\n            <input type=\"submit\" value=\"Pesquisar\">\n        </form>\n        <div class=\"result\">\n            {{{payload}}} <!-- Resultado da pesquisa será exibido aqui -->\n        </div>\n    </div>\n</body>\n</html>",
-        "output": "str",
-        "x": 90,
-        "y": 260,
-        "wires": [
-            [
-                "992618fa9dfe7533"
-            ]
-        ]
     }
 ]
