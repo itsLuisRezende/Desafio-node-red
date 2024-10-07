@@ -3,7 +3,6 @@ Como rodar a aplicação:
 2. execute o node-red com o comando: "node-red"
 3. No repositorio, o fluxo esta disponivel para o download e realização da importação para a conferencia do teste.
 4. Baixe o arquivo "flows.json" e após entrar no node-red, importe o arquivo para conferencia dos testes.
-5. caso precise, o ipconfig: http://127.0.0.1:1880/
 
 Declarações:
 1. Foi minha primeira experiencia com no-red e espero de verdade aprender muito mais com ele, a aplicação e teste envolvendo a API.
