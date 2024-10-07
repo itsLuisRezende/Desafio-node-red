@@ -6,5 +6,5 @@ Como rodar a aplicação:
 
 Declarações:
 1. Foi minha primeira experiencia com no-red e espero de verdade aprender muito mais com ele, a aplicação e teste envolvendo a API.
-2. "BrasilAPI" foi muito bacana e pra mim como programador iniciante.
-3. espero aprender muito mais daqui em diante!
+2. ter usado a "BrasilAPI" foi muito bacana e pra mim como programador iniciante.
+4. espero aprender muito mais daqui em diante!
