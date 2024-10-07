@@ -1,0 +1,201 @@
+[
+    {
+        "id": "745bd6c2de8e9d5c",
+        "type": "tab",
+        "label": "Broker Catalog",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "784a2d30e0c6880b",
+        "type": "tab",
+        "label": "Zip Code Searcher",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "d44cbdee9f8bfde2",
+        "type": "http request",
+        "z": "745bd6c2de8e9d5c",
+        "name": "Chamar API Corretoras",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "https://brasilapi.com.br/api/cvm/corretoras/v1",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 230,
+        "y": 100,
+        "wires": [
+            [
+                "eabdb426c1cd6d26"
+            ]
+        ]
+    },
+    {
+        "id": "c5c429b5edf4f0f4",
+        "type": "http in",
+        "z": "745bd6c2de8e9d5c",
+        "name": "Endpoint Brokers",
+        "url": "/brokers",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 140,
+        "y": 60,
+        "wires": [
+            [
+                "d44cbdee9f8bfde2"
+            ]
+        ]
+    },
+    {
+        "id": "eabdb426c1cd6d26",
+        "type": "function",
+        "z": "745bd6c2de8e9d5c",
+        "name": "Formatar Corretores",
+        "func": "var brokers = msg.payload;  // A resposta da API\n\n// Log para ver o que foi recebido\nnode.warn(\"Dados recebidos: \" + JSON.stringify(brokers)); // Para verificar a entrada\n\n// Tenta analisar brokers se for uma string\nif (typeof brokers === 'string') {\n    try {\n        brokers = JSON.parse(brokers); // Converte a string JSON em um objeto\n    } catch (e) {\n        msg.payload = [\"Erro ao analisar a resposta da API: \" + e.message]; // Se houver erro na análise\n        return msg; // Retorna a mensagem de erro\n    }\n}\n\n// Verifica se brokers é um array\nif (Array.isArray(brokers) && brokers.length > 0) {\n    // Mapeia os corretores para o formato desejado\n    var formattedBrokers = brokers.map(b => {\n        return `${b.nome_comercial} - ${b.municipio} / ${b.cnpj}`; // Formato: Nome Comercial - Município / CNPJ\n    });\n    // Junta os resultados em um array\n    msg.payload = formattedBrokers; // Mantenha como um array\n} else {\n    msg.payload = [\"Nenhum corretor encontrado.\"]; // Mensagem caso não haja corretores\n}\n\n// Log para ver o que está sendo retornado\nnode.warn(\"Resposta formatada: \" + JSON.stringify(msg.payload)); // Verifique a saída\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 140,
+        "wires": [
+            [
+                "c51bf5574c243418"
+            ]
+        ]
+    },
+    {
+        "id": "c51bf5574c243418",
+        "type": "http response",
+        "z": "745bd6c2de8e9d5c",
+        "name": "Enviar Resposta",
+        "statusCode": "",
+        "headers": {},
+        "x": 380,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "2bc9bc88a6d1fdae",
+        "type": "http in",
+        "z": "784a2d30e0c6880b",
+        "name": "Pesquisar CEP",
+        "url": "/cep/:zipcode",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 120,
+        "y": 100,
+        "wires": [
+            [
+                "9eb2f53f1004199e"
+            ]
+        ]
+    },
+    {
+        "id": "992618fa9dfe7533",
+        "type": "function",
+        "z": "784a2d30e0c6880b",
+        "name": "Obter CEP",
+        "func": "var zipcode = msg.req.params.zipcode; // Obtém o CEP da URL\n\n// Remove caracteres não numéricos\nzipcode = zipcode.replace(/\\D/g, '');\n\n// Verifica se o CEP contém exatamente 8 dígitos\nif (zipcode.length !== 8) {\n    msg.payload = { error: \"O CEP deve conter exatamente 8 dígitos.\" };\n    return msg; // Retorna mensagem de erro se o formato estiver errado\n}\n\n// Define a URL da API para buscar o CEP\nmsg.url = `https://brasilapi.com.br/api/cep/v1/{cep}${zipcode}`;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 230,
+        "y": 180,
+        "wires": [
+            [
+                "e5affd8f44dc1dc6"
+            ]
+        ]
+    },
+    {
+        "id": "e5affd8f44dc1dc6",
+        "type": "http request",
+        "z": "784a2d30e0c6880b",
+        "name": "Chamar API de CEP",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "{{{url}}}",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 340,
+        "y": 220,
+        "wires": [
+            [
+                "ad7460915ff5f027"
+            ]
+        ]
+    },
+    {
+        "id": "ad7460915ff5f027",
+        "type": "function",
+        "z": "784a2d30e0c6880b",
+        "name": "Formatar Resposta do CEP",
+        "func": "var response = msg.payload; // A resposta da API\n\n// Log para ver o que foi recebido\nnode.warn(\"Dados recebidos: \" + JSON.stringify(response)); // Para verificar a entrada\n\n// Tenta analisar a resposta se for uma string\nif (typeof response === 'string') {\n    try {\n        response = JSON.parse(response); // Converte a string JSON em um objeto\n    } catch (e) {\n        msg.payload = \"Erro ao analisar a resposta da API: \" + e.message; // Se houver erro na análise\n        return msg; // Retorna a mensagem de erro\n    }\n}\n\n// Verifica se a resposta contém erro\nif (response.error) {\n    msg.payload = `Erro ao buscar o CEP: ${response.error}`; // Se houver erro na busca\n} else {\n    // Formata a resposta\n    msg.payload = `\n        <strong>CEP:</strong> ${response.cep}<br>\n        <strong>Logradouro:</strong> ${response.street || 'Não disponível'}<br>\n        <strong>Bairro:</strong> ${response.neighborhood || 'Não disponível'}<br>\n        <strong>Cidade:</strong> ${response.city}<br>\n        <strong>Estado:</strong> ${response.state}\n    `; // Formata os dados em HTML\n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 260,
+        "wires": [
+            [
+                "35f374d391c6c201"
+            ]
+        ]
+    },
+    {
+        "id": "35f374d391c6c201",
+        "type": "http response",
+        "z": "784a2d30e0c6880b",
+        "name": "Enviar Resposta",
+        "statusCode": "",
+        "headers": {},
+        "x": 540,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "9eb2f53f1004199e",
+        "type": "template",
+        "z": "784a2d30e0c6880b",
+        "name": "CSS/HTML",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "<!DOCTYPE html>\n<html lang=\"pt-BR\">\n<head>\n    <meta charset=\"UTF-8\">\n    <title>Pesquisar CEP</title>\n    <style>\n        body {\n            font-family: Arial, sans-serif;\n            background-color: #f4f4f4;\n            color: #333;\n            margin: 0;\n            padding: 20px;\n        }\n        .container {\n            max-width: 600px;\n            margin: 50px auto;\n            padding: 20px;\n            background-color: #fff;\n            border-radius: 8px;\n            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);\n        }\n        h1 {\n            text-align: center;\n            color: #2c3e50;\n        }\n        input[type=\"text\"], input[type=\"submit\"] {\n            width: 100%;\n            padding: 10px;\n            margin: 10px 0;\n            border-radius: 4px;\n            border: 1px solid #ccc;\n        }\n        input[type=\"submit\"] {\n            background-color: #3498db;\n            color: white;\n            cursor: pointer;\n        }\n        .result {\n            margin-top: 20px;\n        }\n    </style>\n</head>\n<body>\n    <div class=\"container\">\n        <h1>Pesquisar CEP</h1>\n        <form action=\"/cep_result\" method=\"GET\">\n            <label for=\"cep\">Insira o CEP:</label>\n            <input type=\"text\" id=\"cep\" name=\"cep\" placeholder=\"Ex: 01001-000\" required>\n            <input type=\"submit\" value=\"Pesquisar\">\n        </form>\n        <div class=\"result\">\n            {{{payload}}} <!-- Resultado da pesquisa será exibido aqui -->\n        </div>\n    </div>\n</body>\n</html>",
+        "output": "str",
+        "x": 90,
+        "y": 260,
+        "wires": [
+            [
+                "992618fa9dfe7533"
+            ]
+        ]
+    }
+]
